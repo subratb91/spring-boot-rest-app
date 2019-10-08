@@ -3,10 +3,14 @@ package com.subrat.rest.demo.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,11 +24,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.subrat.rest.demo.entities.User;
 import com.subrat.rest.demo.exceptions.UserExistsException;
+import com.subrat.rest.demo.exceptions.UserNameNotFoundException;
 import com.subrat.rest.demo.exceptions.UserNotFoundException;
 import com.subrat.rest.demo.service.UserService;
 
 @RestController
 @RequestMapping("users")
+@Validated
 public class UserController {
 
 	@Autowired
@@ -36,7 +42,7 @@ public class UserController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Void> createUser(@RequestBody User user, UriComponentsBuilder uriComponentsBuilder) {
+	public ResponseEntity<Void> createUser(@Valid @RequestBody User user, UriComponentsBuilder uriComponentsBuilder) {
 		try {
 			userService.createUser(user);
 			HttpHeaders httpHeaders = new HttpHeaders();
@@ -49,7 +55,7 @@ public class UserController {
 	}
 
 	@GetMapping("{id}")
-	public Optional<User> getUserById(@PathVariable("id") Long id) {
+	public Optional<User> getUserById(@PathVariable("id") @Min(1) Long id) {
 		try {
 			return userService.getUserById(id);
 		} catch (UserNotFoundException userNotFoundException) {
@@ -73,8 +79,14 @@ public class UserController {
 	}
 
 	@GetMapping("byUsername/{username}")
-	public User getUserByUsername(@PathVariable("username") String username) {
-		return userService.getUserByUsername(username);
+	public User getUserByUsername(@PathVariable("username") String username) throws UserNameNotFoundException {
+		
+		User user = userService.getUserByUsername(username);
+		if(user == null) {
+			throw new UserNameNotFoundException("Username:"+ username +" not found");
+		}
+		
+		return user;
 	}
 
 }
