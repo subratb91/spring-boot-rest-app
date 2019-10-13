@@ -10,46 +10,24 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "orders")
+@Data
+@NoArgsConstructor
 public class Order {
 	@Id
 	@GeneratedValue
 	@JsonView(Views.Internal.class)
 	private Long orderId;
-	//@JsonView(Views.Internal.class) // Commented to not see this field incJSON response
+	//@JsonView(Views.Internal.class) // Commented to not see this field in JSON response
 	private String orderDescription;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonIgnore
 	private User user;
 
-	public Order() {
-		super();
-	}
-
-	public Long getOrderId() {
-		return orderId;
-	}
-
-	public void setOrderId(Long orderId) {
-		this.orderId = orderId;
-	}
-
-	public String getOrderDescription() {
-		return orderDescription;
-	}
-
-	public void setOrderDescription(String orderDescription) {
-		this.orderDescription = orderDescription;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
 
 }
