@@ -55,9 +55,10 @@ public class UserController {
 	}
 
 	@GetMapping("{id}")
-	public Optional<User> getUserById(@PathVariable("id") @Min(1) Long id) {
+	public User getUserById(@PathVariable("id") @Min(1) Long id) {
 		try {
-			return userService.getUserById(id);
+			Optional<User> userOptional = userService.getUserById(id);
+			return userOptional.get();
 		} catch (UserNotFoundException userNotFoundException) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, userNotFoundException.getMessage());
 		}
