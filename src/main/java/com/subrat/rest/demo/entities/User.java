@@ -11,9 +11,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import lombok.AllArgsConstructor;
@@ -36,10 +33,11 @@ public class User {
 	@JsonView(Views.External.class)
 	private String username;
 
-	@Size(min = 2, message = "Firstname should have at least 2 characters")
+	@Size(min = 2, max=50, message = "Firstname should have at least 2 characters and upto 50 characters")
 	@Column(name = "FIRST_NAME", length = 50, nullable = false)
 	@JsonView(Views.External.class)
 	private String firstname;
+	@Size(min = 1, max=50)
 	@Column(name = "LAST_NAME", length = 50, nullable = false)
 	@JsonView(Views.External.class)
 	private String lastname;
